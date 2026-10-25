@@ -1,0 +1,955 @@
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HASSAN'S DIGITAL UNIVERSE | Project Showcase Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#070913',
+                            card: '#0e1326',
+                            border: '#1e293b',
+                            cyan: '#00f0ff',
+                            purple: '#7000ff',
+                            pink: '#ff007f',
+                            gold: '#ffb700',
+                            emerald: '#00ff88'
+                        }
+                    },
+                    fontFamily: {
+                        syne: ['Syne', 'sans-serif'],
+                        space: ['Space Grotesk', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif']
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s infinite alternate',
+                        'float': 'float 6s ease-in-out infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                        'marquee': 'marquee 25s linear infinite'
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%': { boxShadow: '0 0 15px rgba(0,240,255,0.3)' },
+                            '100%': { boxShadow: '0 0 35px rgba(112,0,255,0.6)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' }
+                        },
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-50%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Vanilla Tilt.js for 3D card tilt effect -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    <!-- QRCode.js CDN for mobile scan generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #070913;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-panel {
+            background: rgba(14, 19, 38, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(18, 24, 48, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(0, 240, 255, 0.3);
+        }
+
+        .text-gradient-cyan {
+            background: linear-gradient(135deg, #00f0ff 0%, #7000ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #ffb700 0%, #ff007f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070913;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+
+        /* Neon Glow Button */
+        .btn-neon {
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .btn-neon::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .btn-neon:hover::before {
+            left: 100%;
+        }
+
+        /* Cursor Glow Element */
+        #cursor-blur {
+            pointer-events: none;
+            position: fixed;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,240,255,0.12) 0%, rgba(112,0,255,0.06) 50%, transparent 70%);
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            transition: width 0.3s, height 0.3s, opacity 0.3s;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen text-slate-200">
+
+    <!-- Interactive Cursor Glow Effect -->
+    <div id="cursor-blur"></div>
+
+    <!-- Canvas Background Particle System -->
+    <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- Top Glow Aurora Overlay -->
+    <div class="fixed -top-40 -left-40 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="fixed -bottom-40 -right-40 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- MAIN WRAPPER -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+
+        <!-- HEADER / NAVIGATION BAR -->
+        <header class="sticky top-0 z-40 w-full glass-panel border-b border-slate-800/80 px-4 lg:px-8 py-3 transition-all duration-300">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <!-- Brand Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-purple-600 p-[2px] transition-transform duration-300 group-hover:scale-110">
+                        <div class="w-full h-full bg-cyber-dark rounded-[10px] flex items-center justify-center font-syne font-extrabold text-xl text-cyan-400">
+                            H
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-syne text-lg lg:text-xl font-bold tracking-wider text-white flex items-center gap-2">
+                            HASSAN <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">HUB</span>
+                        </span>
+                        <span class="text-[10px] text-slate-400 tracking-widest font-space uppercase">Digital Universe v2.0</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav Links -->
+                <nav class="hidden md:flex items-center gap-8 font-space text-sm font-medium">
+                    <a href="#projects" class="text-slate-300 hover:text-cyan-400 transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-cubes text-xs text-cyan-400"></i> Projects
+                    </a>
+                    <a href="#stats" class="text-slate-300 hover:text-cyan-400 transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line text-xs text-purple-400"></i> Analytics
+                    </a>
+                    <a href="#favorites" class="text-slate-300 hover:text-cyan-400 transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-bookmark text-xs text-amber-400"></i> Bookmarks <span id="fav-count-badge" class="px-1.5 py-0.2 text-[10px] rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">0</span>
+                    </a>
+                </nav>
+
+                <!-- Actions Right -->
+                <div class="flex items-center gap-3">
+                    <!-- Audio FX Toggle -->
+                    <button id="soundToggle" title="Toggle UI Sound Effects" class="w-9 h-9 rounded-lg bg-slate-800/60 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-cyan-400 hover:border-cyan-500/50 transition-all">
+                        <i class="fa-solid fa-volume-high text-xs" id="soundIcon"></i>
+                    </button>
+
+                    <!-- Contact / Suggestion Button -->
+                    <button onclick="openFeedbackModal()" class="btn-neon hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-semibold font-space shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all">
+                        <i class="fa-solid fa-paper-plane"></i> Contact Hassan
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- HERO SECTION -->
+        <section class="relative pt-12 pb-16 lg:pt-20 lg:pb-24 px-4 max-w-7xl mx-auto w-full text-center">
+            <!-- Floating Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-space mb-6 animate-pulse-glow">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                Welcome to Hassan's Central Showcase Portal
+            </div>
+
+            <!-- Grand Heading -->
+            <h1 class="font-syne font-extrabold text-4xl sm:text-6xl lg:text-7xl tracking-tight leading-none mb-6">
+                EXPLORE HASSAN'S <br/>
+                <span class="text-gradient-cyan">DIGITAL UNIVERSE</span>
+            </h1>
+
+            <p class="max-w-2xl mx-auto text-slate-400 text-sm sm:text-base lg:text-lg mb-10 font-inter">
+                A central showcase featuring high-speed web toolkits, cloud code hosting, media downloaders, and full-stack personal portfolios. Built for speed, performance & clean UI.
+            </p>
+
+            <!-- Quick Action Buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-4 mb-14">
+                <a href="#projects" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-purple-600 to-pink-500 text-white font-space font-semibold text-sm shadow-xl shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-rocket"></i> Explore All Projects
+                </a>
+                <button onclick="openFeedbackModal()" class="px-7 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-200 font-space font-semibold text-sm hover:border-slate-500 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-comments"></i> Send Feedback
+                </button>
+            </div>
+
+            <!-- LIVE STATS COUNTER GRID -->
+            <div id="stats" class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800/80 hover:border-cyan-500/30 transition-all">
+                    <div class="text-2xl lg:text-3xl font-syne font-bold text-cyan-400 mb-1" id="stat-projects">0</div>
+                    <div class="text-xs text-slate-400 font-space uppercase tracking-wider">Live Projects</div>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800/80 hover:border-purple-500/30 transition-all">
+                    <div class="text-2xl lg:text-3xl font-syne font-bold text-purple-400 mb-1" id="stat-stack">0</div>
+                    <div class="text-xs text-slate-400 font-space uppercase tracking-wider">Technologies</div>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800/80 hover:border-pink-500/30 transition-all">
+                    <div class="text-2xl lg:text-3xl font-syne font-bold text-pink-400 mb-1" id="stat-users">0</div>
+                    <div class="text-xs text-slate-400 font-space uppercase tracking-wider">Happy Users</div>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800/80 hover:border-emerald-500/30 transition-all">
+                    <div class="text-2xl lg:text-3xl font-syne font-bold text-emerald-400 mb-1" id="stat-uptime">99.9%</div>
+                    <div class="text-xs text-slate-400 font-space uppercase tracking-wider">Platform Uptime</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEARCH AND FILTER BAR -->
+        <section class="max-w-7xl mx-auto w-full px-4 mb-10">
+            <div class="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                
+                <!-- Search Input -->
+                <div class="relative w-full md:w-96">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="searchInput" placeholder="Search Hassan's projects or tags..." 
+                           class="w-full bg-slate-900/90 border border-slate-700/80 focus:border-cyan-500 rounded-xl pl-11 pr-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none transition-all">
+                </div>
+
+                <!-- Category Filter Buttons -->
+                <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 font-space text-xs" id="filterContainer">
+                    <button class="filter-btn active px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 font-semibold transition-all whitespace-nowrap" data-category="all">
+                        <i class="fa-solid fa-border-all mr-1"></i> All Projects
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-xl bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white transition-all whitespace-nowrap" data-category="toolkit">
+                        <i class="fa-solid fa-toolbox mr-1"></i> Toolkits
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-xl bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white transition-all whitespace-nowrap" data-category="media">
+                        <i class="fa-solid fa-video mr-1"></i> Media Tools
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-xl bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white transition-all whitespace-nowrap" data-category="hosting">
+                        <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Code Hosting
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-xl bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white transition-all whitespace-nowrap" data-category="portfolio">
+                        <i class="fa-solid fa-user mr-1"></i> Portfolios
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-xl bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white transition-all whitespace-nowrap" data-category="favorites">
+                        <i class="fa-solid fa-heart text-pink-500 mr-1"></i> Saved
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS GRID SECTION -->
+        <main id="projects" class="max-w-7xl mx-auto w-full px-4 mb-20 flex-grow">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="font-syne text-2xl lg:text-3xl font-bold text-white flex items-center gap-3">
+                        <i class="fa-solid fa-layer-group text-cyan-400"></i> Featured Projects Showcase
+                    </h2>
+                    <p class="text-slate-400 text-xs sm:text-sm font-inter">Click 'Launch Project' to visit live app or 'Preview Details' for specs & mobile QR access.</p>
+                </div>
+                <div class="text-xs text-slate-400 font-space hidden sm:block">
+                    Showing <span id="projectCount" class="text-cyan-400 font-bold">5</span> Active Apps
+                </div>
+            </div>
+
+            <!-- Cards Container -->
+            <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Javascript will render project cards dynamically here -->
+            </div>
+
+            <!-- Empty State Message -->
+            <div id="emptyState" class="hidden text-center py-16 glass-panel rounded-3xl border border-slate-800">
+                <i class="fa-solid fa-magnifying-glass-minus text-4xl text-slate-500 mb-3"></i>
+                <h3 class="font-syne text-lg font-bold text-slate-300">Koi Project Nahi Mila!</h3>
+                <p class="text-slate-500 text-xs mt-1">Try resetting your search query or category filter.</p>
+                <button onclick="resetFilters()" class="mt-4 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-space">
+                    Reset Filters
+                </button>
+            </div>
+        </main>
+
+        <!-- FOOTER SECTION -->
+        <footer class="mt-auto border-t border-slate-800/80 glass-panel bg-slate-950/80 py-10 px-4">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <!-- Branding -->
+                <div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center font-syne font-bold text-cyan-400">
+                            H
+                        </div>
+                        <span class="font-syne text-lg font-bold text-white">HASSAN SHOWCASE</span>
+                    </div>
+                    <p class="text-slate-400 text-xs leading-relaxed font-inter">
+                        Hassan's official portal connecting all web toolkits, developer hosting platforms, and video downloaders under one seamless digital hub.
+                    </p>
+                </div>
+
+                <!-- Fast Links -->
+                <div>
+                    <h4 class="font-space text-xs font-bold text-slate-200 uppercase tracking-wider mb-3">Direct Links</h4>
+                    <ul class="space-y-2 text-xs text-slate-400 font-inter">
+                        <li><a href="https://toolkit.page.gd/t/hassan-2nd-toolkit" target="_blank" class="hover:text-cyan-400 transition-colors"><i class="fa-solid fa-chevron-right text-[10px] text-cyan-500 mr-1"></i> Hassan Toolkit v1</a></li>
+                        <li><a href="https://hassan-toolkit-pro.vercel.app/" target="_blank" class="hover:text-cyan-400 transition-colors"><i class="fa-solid fa-chevron-right text-[10px] text-purple-500 mr-1"></i> Hassan Toolkit Pro v2</a></li>
+                        <li><a href="https://hassan-ttvd.vercel.app/" target="_blank" class="hover:text-cyan-400 transition-colors"><i class="fa-solid fa-chevron-right text-[10px] text-pink-500 mr-1"></i> TikTok Video Downloader</a></li>
+                        <li><a href="https://hassan-host-top.vercel.app/" target="_blank" class="hover:text-cyan-400 transition-colors"><i class="fa-solid fa-chevron-right text-[10px] text-emerald-500 mr-1"></i> Host Your Code Cloud</a></li>
+                        <li><a href="https://hassan-portfolio-v1-one.vervel.app/" target="_blank" class="hover:text-cyan-400 transition-colors"><i class="fa-solid fa-chevron-right text-[10px] text-amber-500 mr-1"></i> Official Portfolio</a></li>
+                    </ul>
+                </div>
+
+                <!-- Status & Badge -->
+                <div>
+                    <h4 class="font-space text-xs font-bold text-slate-200 uppercase tracking-wider mb-3">Developer Status</h4>
+                    <div class="glass-panel p-4 rounded-xl border border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-white">
+                                    H
+                                </div>
+                                <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-slate-950"></span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-white font-space">Hassan Developer</div>
+                                <div class="text-[11px] text-emerald-400">Available for Projects</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marquee Running Text -->
+            <div class="overflow-hidden border-t border-b border-slate-800/50 py-2 mb-6">
+                <div class="whitespace-nowrap flex gap-8 text-xs font-space text-slate-500 animate-marquee">
+                    <span>⚡ HASSAN TOOLKIT PRO LIVE</span>
+                    <span>•</span>
+                    <span>🚀 HOST YOUR CODE CLOUD PLATFORM</span>
+                    <span>•</span>
+                    <span>📥 INSTANT TIKTOK NO-WATERMARK DOWNLOADER</span>
+                    <span>•</span>
+                    <span>💼 HASSAN OFFICIAL DEVELOPER PORTFOLIO</span>
+                    <span>•</span>
+                    <span>⚡ HASSAN TOOLKIT PRO LIVE</span>
+                    <span>•</span>
+                    <span>🚀 HOST YOUR CODE CLOUD PLATFORM</span>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 font-space gap-4">
+                <div>&copy; 2026 Hassan Digital Hub. All Rights Reserved.</div>
+                <div class="flex items-center gap-4">
+                    <span class="text-slate-400">Crafted for Excellence</span>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- PROJECT DETAIL MODAL WITH SIMULATED LIVE PREVIEW & QR CODE -->
+    <div id="projectModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-3xl rounded-3xl border border-slate-700/80 shadow-2xl overflow-hidden relative flex flex-col max-h-[90vh]">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-5 border-b border-slate-800 bg-slate-900/50">
+                <div class="flex items-center gap-3">
+                    <span id="modalCategoryBadge" class="px-2.5 py-1 rounded-md bg-cyan-500/20 text-cyan-400 text-[10px] font-space font-semibold uppercase tracking-wider">
+                        Category
+                    </span>
+                    <h3 id="modalTitle" class="font-syne text-xl font-bold text-white">Project Title</h3>
+                </div>
+                <button onclick="closeProjectModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-6 overflow-y-auto space-y-6">
+                <!-- Preview Frame Simulation -->
+                <div class="relative w-full h-52 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col">
+                    <div class="bg-slate-950 px-4 py-2 border-b border-slate-800 flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-green-500/80"></span>
+                        <span id="modalMockUrl" class="ml-2 text-[10px] font-mono text-slate-500 truncate">https://project-url.com</span>
+                    </div>
+                    <div class="flex-grow flex flex-col items-center justify-center p-4 text-center bg-gradient-to-b from-slate-900 to-cyber-card">
+                        <i id="modalIcon" class="fa-solid fa-globe text-4xl text-cyan-400 mb-2"></i>
+                        <h4 class="font-syne text-lg font-bold text-slate-200" id="modalFrameTitle">Live Web Application</h4>
+                        <p class="text-xs text-slate-400 max-w-md mt-1">Ready to explore. Click launch button below to open in new browser tab.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Text Info -->
+                    <div class="md:col-span-2 space-y-4">
+                        <div>
+                            <h4 class="text-xs font-space font-bold uppercase tracking-wider text-slate-400 mb-1">Description</h4>
+                            <p id="modalDescription" class="text-sm text-slate-300 leading-relaxed font-inter">
+                                Detailed description about this Hassan project...
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-space font-bold uppercase tracking-wider text-slate-400 mb-2">Technologies & Tags</h4>
+                            <div id="modalTags" class="flex flex-wrap gap-2">
+                                <!-- Tags injected via JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Access QR Code -->
+                    <div class="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-col items-center justify-center text-center">
+                        <div id="qrcode" class="p-2 bg-white rounded-xl mb-2"></div>
+                        <span class="text-[10px] text-slate-400 font-space flex items-center gap-1">
+                            <i class="fa-solid fa-mobile-screen"></i> Scan for Mobile Access
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-5 border-t border-slate-800 bg-slate-900/50 flex items-center justify-between">
+                <button id="modalFavBtn" class="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300 hover:text-amber-400 text-xs font-space flex items-center gap-2 border border-slate-700">
+                    <i class="fa-solid fa-star"></i> Save Project
+                </button>
+                <a id="modalLaunchBtn" href="#" target="_blank" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-space font-semibold text-xs shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Launch Full Application
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEEDBACK / CONTACT MODAL -->
+    <div id="feedbackModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-lg rounded-3xl border border-slate-700/80 shadow-2xl p-6 relative">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-syne text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-cyan-400"></i> Contact / Suggestion
+                </h3>
+                <button onclick="closeFeedbackModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <form id="feedbackForm" onsubmit="handleFeedbackSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-space text-slate-300 mb-1">Aapka Naam / Name</label>
+                    <input type="text" required placeholder="Hassan's Guest" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:border-cyan-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-space text-slate-300 mb-1">Email Address</label>
+                    <input type="email" required placeholder="guest@example.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:border-cyan-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-space text-slate-300 mb-1">Message or Tool Suggestion</label>
+                    <textarea rows="4" required placeholder="Hassan bhai, aap ki website bohot zabardast hai! Mujhe..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:border-cyan-500 focus:outline-none"></textarea>
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 font-space font-bold text-white text-xs shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all">
+                    Send Message to Hassan
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT LOGIC -->
+    <script>
+        // PROJECT DATABASE
+        const projectsData = [
+            {
+                id: "project-1",
+                title: "HASSAN TOOLKIT",
+                category: "toolkit",
+                categoryLabel: "Web Utility Toolkit",
+                description: "The ultimate digital web toolkit packed with essential daily web utilities, text converters, formatters, and developer productivity tools in a sleek dark UI.",
+                link: "https://toolkit.page.gd/t/hassan-2nd-toolkit",
+                tags: ["#Toolkit", "#DeveloperTools", "#WebUtils"],
+                icon: "fa-solid fa-toolbox",
+                colorGradient: "from-cyan-500 to-blue-600",
+                badgeColor: "text-cyan-400 bg-cyan-500/10 border-cyan-500/30"
+            },
+            {
+                id: "project-2",
+                title: "HASSAN 2ND TOOLKIT PRO",
+                category: "toolkit",
+                categoryLabel: "Pro Web Application Suite",
+                description: "Next-gen high-performance toolkit with pro-level capabilities, lightning-fast web apps, enhanced security tools, and modern UI controls.",
+                link: "https://hassan-toolkit-pro.vercel.app/",
+                tags: ["#ProSuite", "#WebApps", "#Vercel", "#NextGen"],
+                icon: "fa-solid fa-wand-magic-sparkles",
+                colorGradient: "from-purple-500 to-indigo-600",
+                badgeColor: "text-purple-400 bg-purple-500/10 border-purple-500/30"
+            },
+            {
+                id: "project-3",
+                title: "TIKTOK VIDEO DOWNLOADER",
+                category: "media",
+                categoryLabel: "Media Downloader Tool",
+                description: "Instant high-speed TikTok video downloader without watermark. HD quality extraction, audio converter, and instant download speeds.",
+                link: "https://hassan-ttvd.vercel.app/",
+                tags: ["#TikTokDownloader", "#NoWatermark", "#MediaTool", "#HD"],
+                icon: "fa-solid fa-circle-down",
+                colorGradient: "from-pink-500 to-rose-600",
+                badgeColor: "text-pink-400 bg-pink-500/10 border-pink-500/30"
+            },
+            {
+                id: "project-4",
+                title: "HOST YOUR CODE",
+                category: "hosting",
+                categoryLabel: "Developer Cloud Hosting",
+                description: "Ultra-fast code hosting platform for web scripts, HTML, CSS, JS, and live preview links. Share your source code instantly with the world!",
+                link: "https://hassan-host-top.vercel.app/",
+                tags: ["#CodeHosting", "#CloudPlatform", "#DevHub", "#LiveShare"],
+                icon: "fa-solid fa-cloud-arrow-up",
+                colorGradient: "from-emerald-400 to-teal-600",
+                badgeColor: "text-emerald-400 bg-emerald-500/10 border-emerald-500/30"
+            },
+            {
+                id: "project-5",
+                title: "HASSAN PERSONAL PORTFOLIO",
+                category: "portfolio",
+                categoryLabel: "Developer Branding",
+                description: "Hassan's main developer portfolio showcasing full-stack skills, custom web creations, UI/UX designs, experience, and contact details.",
+                link: "https://hassan-portfolio-v1-one.vervel.app/",
+                tags: ["#Portfolio", "#FullStack", "#Developer", "#UIUX"],
+                icon: "fa-solid fa-user-astronaut",
+                colorGradient: "from-amber-400 to-orange-600",
+                badgeColor: "text-amber-400 bg-amber-500/10 border-amber-500/30"
+            }
+        ];
+
+        // LOCAL STORAGE BOOKMARKS STATE
+        let savedFavorites = JSON.parse(localStorage.getItem('hassan_favs')) || [];
+        let soundEnabled = true;
+
+        // UI SOUND EFFECTS USING WEB AUDIO API
+        function playTone(freq = 440, type = 'sine', duration = 0.1) {
+            if(!soundEnabled) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + duration);
+            } catch(e){}
+        }
+
+        // INITIALIZE APPLICATION
+        window.addEventListener('DOMContentLoaded', () => {
+            renderProjects(projectsData);
+            initStatsCounter();
+            initParticleCanvas();
+            initCursorEffect();
+            updateFavBadge();
+
+            // Setup Search & Filter Listeners
+            document.getElementById('searchInput').addEventListener('input', filterProjects);
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.filter-btn').forEach(b => {
+                        b.classList.remove('active', 'bg-cyan-500', 'text-slate-950');
+                        b.classList.add('bg-slate-800/80', 'text-slate-300');
+                    });
+                    const target = e.currentTarget;
+                    target.classList.add('active', 'bg-cyan-500', 'text-slate-950');
+                    target.classList.remove('bg-slate-800/80', 'text-slate-300');
+                    filterProjects();
+                    playTone(600, 'sine', 0.08);
+                });
+            });
+
+            // Sound Toggle
+            document.getElementById('soundToggle').addEventListener('click', () => {
+                soundEnabled = !soundEnabled;
+                const icon = document.getElementById('soundIcon');
+                if(soundEnabled) {
+                    icon.className = "fa-solid fa-volume-high text-xs";
+                    playTone(523.25, 'triangle', 0.15);
+                } else {
+                    icon.className = "fa-solid fa-volume-xmark text-xs";
+                }
+            });
+        });
+
+        // RENDER PROJECT CARDS
+        function renderProjects(items) {
+            const grid = document.getElementById('projectsGrid');
+            const empty = document.getElementById('emptyState');
+            const countDisplay = document.getElementById('projectCount');
+            
+            grid.innerHTML = '';
+            countDisplay.innerText = items.length;
+
+            if (items.length === 0) {
+                empty.classList.remove('hidden');
+                return;
+            } else {
+                empty.classList.add('hidden');
+            }
+
+            items.forEach((proj) => {
+                const isFav = savedFavorites.includes(proj.id);
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-3xl p-6 flex flex-col justify-between relative group hover:-translate-y-2 transition-all duration-300';
+                card.setAttribute('data-tilt', '');
+                card.setAttribute('data-tilt-max', '8');
+                card.setAttribute('data-tilt-speed', '400');
+                card.setAttribute('data-tilt-glare', 'true');
+                card.setAttribute('data-tilt-max-glare', '0.1');
+
+                card.innerHTML = `
+                    <div>
+                        <!-- Top Card Bar -->
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 rounded-lg font-space text-[10px] font-semibold tracking-wider uppercase border ${proj.badgeColor}">
+                                ${proj.categoryLabel}
+                            </span>
+                            <button onclick="toggleFavorite('${proj.id}', event)" class="w-8 h-8 rounded-full bg-slate-900/80 border border-slate-700/80 flex items-center justify-center text-slate-400 hover:text-amber-400 transition-colors">
+                                <i class="fa-${isFav ? 'solid text-amber-400' : 'regular'} fa-star text-xs"></i>
+                            </button>
+                        </div>
+
+                        <!-- Card Header Icon & Title -->
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${proj.colorGradient} p-[1px] shadow-lg">
+                                <div class="w-full h-full bg-cyber-card rounded-[15px] flex items-center justify-center">
+                                    <i class="${proj.icon} text-lg text-white"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-syne text-lg font-bold text-white group-hover:text-cyan-400 transition-colors">
+                                    ${proj.title}
+                                </h3>
+                                <a href="${proj.link}" target="_blank" class="text-[11px] text-slate-500 font-mono hover:underline truncate block max-w-[180px]">
+                                    ${proj.link.replace('https://', '')}
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <p class="text-xs text-slate-400 leading-relaxed font-inter mb-6 line-clamp-3">
+                            ${proj.description}
+                        </p>
+                    </div>
+
+                    <div>
+                        <!-- Tags -->
+                        <div class="flex flex-wrap gap-1.5 mb-6">
+                            ${proj.tags.map(tag => `<span class="px-2 py-0.5 rounded-md bg-slate-900/80 text-[10px] font-space text-slate-400 border border-slate-800">${tag}</span>`).join('')}
+                        </div>
+
+                        <!-- Action Buttons Grid -->
+                        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800/80">
+                            <button onclick="openProjectModal('${proj.id}')" class="py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 font-space text-xs font-semibold flex items-center justify-center gap-1.5 transition-all">
+                                <i class="fa-solid fa-eye text-[11px]"></i> Details
+                            </button>
+                            <a href="${proj.link}" target="_blank" onclick="playTone(800, 'sine', 0.1)" class="btn-neon py-2.5 rounded-xl bg-gradient-to-r ${proj.colorGradient} text-white font-space text-xs font-semibold flex items-center justify-center gap-1.5 shadow-md transition-all">
+                                Launch <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            // Re-initialize VanillaTilt for dynamic elements
+            if (typeof VanillaTilt !== 'undefined') {
+                VanillaTilt.init(document.querySelectorAll("[data-tilt]"));
+            }
+        }
+
+        // FILTER PROJECTS SEARCH & CATEGORY
+        function filterProjects() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const activeBtn = document.querySelector('.filter-btn.active');
+            const category = activeBtn ? activeBtn.getAttribute('data-category') : 'all';
+
+            const filtered = projectsData.filter(proj => {
+                const matchesSearch = proj.title.toLowerCase().includes(query) ||
+                                      proj.description.toLowerCase().includes(query) ||
+                                      proj.tags.some(t => t.toLowerCase().includes(query));
+
+                let matchesCat = true;
+                if (category === 'favorites') {
+                    matchesCat = savedFavorites.includes(proj.id);
+                } else if (category !== 'all') {
+                    matchesCat = proj.category === category;
+                }
+
+                return matchesSearch && matchesCat;
+            });
+
+            renderProjects(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                if(b.getAttribute('data-category') === 'all') {
+                    b.click();
+                }
+            });
+        }
+
+        // TOGGLE FAVORITE / BOOKMARK
+        function toggleFavorite(id, e) {
+            e.stopPropagation();
+            playTone(900, 'triangle', 0.12);
+            if (savedFavorites.includes(id)) {
+                savedFavorites = savedFavorites.filter(favId => favId !== id);
+            } else {
+                savedFavorites.push(id);
+            }
+            localStorage.setItem('hassan_favs', JSON.stringify(savedFavorites));
+            updateFavBadge();
+            filterProjects();
+        }
+
+        function updateFavBadge() {
+            const badge = document.getElementById('fav-count-badge');
+            if(badge) badge.innerText = savedFavorites.length;
+        }
+
+        // PROJECT MODAL WITH SIMULATED PREVIEW & QR CODE
+        let qrInstance = null;
+
+        function openProjectModal(id) {
+            playTone(700, 'sine', 0.1);
+            const proj = projectsData.find(p => p.id === id);
+            if (!proj) return;
+
+            document.getElementById('modalTitle').innerText = proj.title;
+            document.getElementById('modalCategoryBadge').innerText = proj.categoryLabel;
+            document.getElementById('modalMockUrl').innerText = proj.link;
+            document.getElementById('modalFrameTitle').innerText = proj.title;
+            document.getElementById('modalDescription').innerText = proj.description;
+            document.getElementById('modalIcon').className = `${proj.icon} text-4xl text-cyan-400 mb-2`;
+            document.getElementById('modalLaunchBtn').href = proj.link;
+
+            // Render tags
+            const tagsContainer = document.getElementById('modalTags');
+            tagsContainer.innerHTML = proj.tags.map(t => `<span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-xs font-space text-cyan-300">${t}</span>`).join('');
+
+            // Generate QR Code
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            qrInstance = new QRCode(qrContainer, {
+                text: proj.link,
+                width: 90,
+                height: 90,
+                colorDark : "#070913",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+
+            // Fav button modal setup
+            const favBtn = document.getElementById('modalFavBtn');
+            const isFav = savedFavorites.includes(proj.id);
+            favBtn.innerHTML = `<i class="fa-${isFav ? 'solid text-amber-400' : 'regular'} fa-star"></i> ${isFav ? 'Saved' : 'Save Project'}`;
+            favBtn.onclick = (e) => {
+                toggleFavorite(proj.id, e);
+                openProjectModal(proj.id);
+            };
+
+            const modal = document.getElementById('projectModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeProjectModal() {
+            const modal = document.getElementById('projectModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // FEEDBACK MODAL
+        function openFeedbackModal() {
+            playTone(650, 'sine', 0.1);
+            const modal = document.getElementById('feedbackModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeFeedbackModal() {
+            const modal = document.getElementById('feedbackModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function handleFeedbackSubmit(e) {
+            e.preventDefault();
+            playTone(1000, 'sine', 0.2);
+            alert("Shukriya! Aap ka paigham Hassan tak pohanch gaya hai.");
+            closeFeedbackModal();
+            document.getElementById('feedbackForm').reset();
+        }
+
+        // STATS COUNTER ANIMATION
+        function initStatsCounter() {
+            const targets = {
+                'stat-projects': 5,
+                'stat-stack': 12,
+                'stat-users': 1500
+            };
+
+            Object.keys(targets).forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                let current = 0;
+                const target = targets[id];
+                const increment = Math.ceil(target / 40);
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    el.innerText = current + (id === 'stat-users' ? '+' : '');
+                }, 40);
+            });
+        }
+
+        // CANVAS BACKGROUND PARTICLE SYSTEM
+        function initParticleCanvas() {
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const particles = [];
+            const particleCount = Math.min(Math.floor(width / 15), 65);
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    radius: Math.random() * 2 + 0.5,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    alpha: Math.random() * 0.5 + 0.2
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                particles.forEach((p, i) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0) p.x = width;
+                    if (p.x > width) p.x = 0;
+                    if (p.y < 0) p.y = height;
+                    if (p.y > height) p.y = 0;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(0, 240, 255, ${p.alpha})`;
+                    ctx.fill();
+
+                    // Connect nearby points
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p.x - p2.x;
+                        const dy = p.y - p2.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < 110) {
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(112, 0, 255, ${0.15 * (1 - dist / 110)})`;
+                            ctx.lineWidth = 0.6;
+                            ctx.stroke();
+                        }
+                    }
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        // MOUSE GLOW TRAIL EFFECT
+        function initCursorEffect() {
+            const glow = document.getElementById('cursor-blur');
+            window.addEventListener('mousemove', (e) => {
+                glow.style.left = e.clientX + 'px';
+                glow.style.top = e.clientY + 'px';
+            });
+        }
+    </script>
+</body>
+</html>
